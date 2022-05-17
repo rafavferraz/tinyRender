@@ -5,7 +5,7 @@ CXX = g++
 
 CXXFLAGS = -O3 -march=native -std=c++2a -Wall -Wfatal-errors
 CXXLIBS = -L/usr/local/cuda/lib64 -lcuda -lcudart -ltbb -pthread \
--lglfw -lGLU -lGL -lXrandr -lXxf86vm -lXi -lXinerama -lX11 -lrt -ldl
+	./dependencies/glad/lib/libglad.a -lglfw -lX11 -lpthread -lXrandr -lXi -ldl \
 
 
 INC_FOLDER = ./include
@@ -34,9 +34,5 @@ main.o: $(CXX_OBJECTS) #benchmark.h
 
 clean:
 	rm -rf $(CXX_OBJECTS) $(TARGET) $(TARGET_OBJ) $(TARGET_LIB)
-
-
-
-
 
 
