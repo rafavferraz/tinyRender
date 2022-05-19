@@ -37,6 +37,7 @@ struct Render {
 
   Shader shader;
   Camera camera;
+  Event event_handler;
 
   void clear() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -105,9 +106,9 @@ struct Render {
   }
 
   template<class Lambda_1, class Lambda_2, class Lambda_3, class Lambda_4>
-  void run(const Window& window, const Event& event_handler, 
-           const Lambda_1& setup_lambda, const Lambda_2& update_lambda, 
-           const Lambda_3& draw_lambda, const Lambda_4& event_lambda) {
+  void run(const Window& window, const Lambda_1& setup_lambda, 
+           const Lambda_2& update_lambda, const Lambda_3& draw_lambda, 
+           const Lambda_4& event_lambda) {
 
     setup_lambda();
     

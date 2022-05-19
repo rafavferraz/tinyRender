@@ -10,8 +10,6 @@ int main() {
 
 	Window window("Test Window",800,600);
 
-	Event event_handler;
-
 	Render render;
 
 	auto setup = [&](){
@@ -56,7 +54,7 @@ int main() {
     //   OUTPUT("Z pressed!!")
 	};
 
-	render.run(window,event_handler,setup,update,draw,event);
+	render.run(window,setup,update,draw,event);
 
 	return 0;
 }
