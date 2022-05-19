@@ -22,6 +22,10 @@ struct Window {
 
            initialize();
          }
+  
+  ~Window() {
+    glfwTerminate();
+  }
 
   std::string window_name;
   int screen_width;
@@ -56,10 +60,6 @@ struct Window {
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
       std::cout << "Error @ Window. Failed to initialize GLAD" << std::endl;
     } 
-  }
-
-  void terminate() {
-    glfwTerminate();
   }
 
   static void framebufferSizeCallback(GLFWwindow* window, int width, int height) {

@@ -27,7 +27,7 @@ $(TARGET_LIB): $(CXX_OBJECTS)
 	ar rcs $@ $^
 
 #dependencies
-main.o: $(CXX_OBJECTS) shader.h window.h event.h camera.h
+main.o: $(CXX_OBJECTS) shader.h window.h event.h camera.h render.h objects.h
 
 #explicit dependencies
 #$(OBJ_FOLDER)/distance.o: $(OBJ_FOLDER)/primitives.o

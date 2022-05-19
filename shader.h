@@ -11,10 +11,15 @@
 
 struct Shader {
 
+  Shader() {}
   Shader(const std::string& vertex_path, const std::string& fragment_path) {
 
     auto [ vertex_code, fragment_code ] = read(vertex_path,fragment_path);
     compile(vertex_code.c_str(),fragment_code.c_str());
+  }
+
+  ~Shader() {
+    // glDeleteProgram(shader_id);  
   }
 
   void deleteShader() {
