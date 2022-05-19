@@ -18,9 +18,6 @@ struct State {
 
 void scroll_callback(GLFWwindow* window, double x_offset, double y_offset) {
 
-  // state.mouse_scroll_up = false;
-  // state.mouse_scroll_down = false;
-  
   if (y_offset >= 0) {
     state.mouse_scroll_up = true;
     return;
@@ -32,16 +29,15 @@ void scroll_callback(GLFWwindow* window, double x_offset, double y_offset) {
   }
 }
 
-
 struct Event {
 
   Event() {}
 
-  void poll() {
+  void poll() const {
 		glfwPollEvents();
   }
       
-  void processInput(GLFWwindow *window, Camera* camera) {
+  void processInput(GLFWwindow *window, Camera* camera) const {
     
     //keyboard
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) 
@@ -69,8 +65,10 @@ struct Event {
     }
   }
 
-  void run(GLFWwindow *window, Camera* camera) {
-
+  template<class Lambda>
+  void run(GLFWwindow *window, Camera* camera, const Lambda& event_lambda) const {
+    
+    event_lambda();
     poll();
 		processInput(window,camera);
   }

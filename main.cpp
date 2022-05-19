@@ -14,25 +14,24 @@ int main() {
 
 	Render render;
 
+	auto setup = [&](){
 
-//main loop
-	while (!glfwWindowShouldClose(window.window_ptr)) {
+	};
 
-		event_handler.run(window.window_ptr,&render.camera);
+	auto update = [&](){
 
-		render.clear();
+	};
+
+	auto draw = [&]() {
 
 		render.background(glm::vec4(0.2f, 0.3f, 0.3f, 1.0f));
-
 
 		//model
 		glm::mat4 model_matrix = glm::mat4(1.0f);
 		model_matrix = glm::rotate(model_matrix, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		render.shader.setUniformMat4("model",model_matrix);
 
-
 		render.cameraBegin();
-
 
 		render.drawTriangle();
 
@@ -48,14 +47,18 @@ int main() {
 
 		render.popMatrix();
 
-
 		render.cameraEnd();
+	};
 
+	auto event = [&](){
 
-//render.h??
-		//swap buffers
-		glfwSwapBuffers(window.window_ptr);
-	}
+		// if (glfwGetKey(window.window_ptr, GLFW_KEY_Z) == GLFW_PRESS) 
+    //   OUTPUT("Z pressed!!")
+	};
+
+	render.run(window,event_handler,setup,update,draw,event);
 
 	return 0;
 }
+
+

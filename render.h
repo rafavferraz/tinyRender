@@ -7,6 +7,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "event.h"
 #include "camera.h"
 #include "shader.h"
 #include "objects.h"
@@ -92,6 +93,30 @@ struct Render {
 		glClearColor(color.x,color.y,color.z,color.w);
   }
 
+  template<class Lambda>
+  void draw(const Window& window, const Lambda& lambda) {
+    
+    clear();
 
+    lambda();
+
+    //swap buffers
+		glfwSwapBuffers(window.window_ptr);
+  }
+
+  template<class Lambda_1, class Lambda_2, class Lambda_3, class Lambda_4>
+  void run(const Window& window, const Event& event_handler, 
+           const Lambda_1& setup_lambda, const Lambda_2& update_lambda, 
+           const Lambda_3& draw_lambda, const Lambda_4& event_lambda) {
+
+    setup_lambda();
+    
+    while (!glfwWindowShouldClose(window.window_ptr)) {
+
+		  event_handler.run(window.window_ptr,&camera,event_lambda);
+      update_lambda();
+      draw(window,draw_lambda);
+    }
+  }
 
 };
