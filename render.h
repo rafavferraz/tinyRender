@@ -24,24 +24,20 @@ struct Render {
          unsigned int screen_x_position = 0, 
          unsigned int screen_y_position = 0): 
          window(window_name,screen_width,screen_height,screen_x_position,screen_y_position),
-         shader("./shader.vert","./shader.frag") {
+         shader("./shader.vert","./shader.frag"),
+         camera(glm::vec3(0.0f,0.0f,10.0f)) {
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    // glEnable(GL_DEPTH_TEST);
+    initialize();
 
 		glm::mat4 transform_matrix = glm::mat4(1.0f);
+		glm::mat4 model_matrix = glm::mat4(1.0f);
     glm::mat4 view_matrix = glm::mat4(1.0f);
 		glm::mat4 projection_matrix = glm::mat4(1.0f);
 		
 		shader.setUniformMat4("transform",transform_matrix);
+		shader.setUniformMat4("model",model_matrix);
 		shader.setUniformMat4("view",view_matrix);
 		shader.setUniformMat4("projection",projection_matrix);
-
-    camera = Camera(glm::vec3(0.0f, 0.0f, 5.0f));
-  }
-
-  ~Render() {
   }
 
   Window<WindowType> window;
@@ -52,7 +48,14 @@ struct Render {
   Square square;
   Cube cube;
 
-  glm::mat4 transform = glm::mat4(1.0f);
+  glm::mat4 model_matrix = glm::mat4(1.0f);
+
+  void initialize() const {
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    // glEnable(GL_DEPTH_TEST);
+  }
 
   void drawTriangle() const {
     triangle.draw();
@@ -68,20 +71,20 @@ struct Render {
 
   void pushMatrix() {
 
-		transform = glm::mat4(1.0f);
-		shader.setUniformMat4("transform",transform);
+		model_matrix = glm::mat4(1.0f);
+		shader.setUniformMat4("model",model_matrix);
   }
 
   void translate(const glm::vec3& value) {
 
-    transform = glm::translate(transform,value);
-		shader.setUniformMat4("transform",transform);
+    model_matrix = glm::translate(model_matrix,value);
+		shader.setUniformMat4("model",model_matrix);
   }
 
   void popMatrix() {
 
-		transform = glm::mat4(1.0f);
-		shader.setUniformMat4("transform",transform);
+		model_matrix = glm::mat4(1.0f);
+		shader.setUniformMat4("model",model_matrix);
   }
 
   void cameraBegin() const {
