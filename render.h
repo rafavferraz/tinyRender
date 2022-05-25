@@ -89,8 +89,17 @@ struct Render {
 
   void cameraBegin() const {
 
+    auto screen_width = window.screen_width;
+    auto screen_height = window.screen_height;
+    auto aspect_ratio = (float)screen_width / screen_height;
+    // OUTPUT(screen_width,screen_height)
+
+    float near_clip = 0.1f;
+    float far_clip = 1000.0f;
+    float fov = glm::radians(45.0f);
+
 		glm::mat4 view_matrix = camera.getViewMatrix();
-		glm::mat4 projection_matrix = glm::perspective(glm::radians(45.0f), 800.0f / 800.0f, 0.1f, 1000.0f);
+		glm::mat4 projection_matrix = glm::perspective(fov,aspect_ratio,near_clip,far_clip);
 		
 		shader.setUniformMat4("view",view_matrix);
 		shader.setUniformMat4("projection",projection_matrix);

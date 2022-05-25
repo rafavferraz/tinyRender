@@ -2,7 +2,7 @@
 
 layout (location = 0) in vec3 position;
 
-uniform mat4 transform;   //object's own transformation
+uniform mat4 transform;   //object's own transform
 
 uniform mat4 model;       //render.pushMatrix()
 uniform mat4 view;        //render.cameraBegin()

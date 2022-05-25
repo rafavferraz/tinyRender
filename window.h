@@ -81,10 +81,10 @@ struct Window<window::GLFW> {
   }
 
   std::string window_name;
-  unsigned int screen_width;
-  unsigned int screen_height;
-  unsigned int screen_x_position;
-  unsigned int screen_y_position;
+  int screen_width;
+  int screen_height;
+  int screen_x_position;
+  int screen_y_position;
 
   GLFWwindow* window_ptr;
 
@@ -120,7 +120,7 @@ struct Window<window::GLFW> {
             const DrawFunction& drawFunction, 
             const EventFunction& eventFunction,
             const ClearFunction& clearFunction,
-            const bool& print_clock) const {
+            const bool& print_clock) {
     
     double current_time = 0.0;
     ClockAveraged<clock_precision::seconds> clock_loop;
@@ -141,6 +141,8 @@ struct Window<window::GLFW> {
         processInput(camera,current_time);
         eventFunction();
 
+        glfwGetWindowSize(window_ptr,&screen_width,&screen_height);
+
       clock_loop.toc();
 
       if (clock_loop.hasElapsed(milliseconds(500))) {
@@ -156,7 +158,7 @@ struct Window<window::GLFW> {
 };
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
-  glViewport(0, 0, width, height);
+  glViewport(0,0,width,height);
 }
 
 void scrollCallback(GLFWwindow* window, double x_offset, double y_offset) {
