@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../../utility/clock.h"
+
 #include "dependencies/glad/include/glad/glad.h"
 #include <GLFW/glfw3.h>
 
@@ -7,51 +9,62 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "event.h"
 #include "camera.h"
 #include "shader.h"
 #include "objects.h"
+#include "window.h"
 
 
+template<class WindowType>
 struct Render {
 
-  Render() {
+  Render(const std::string& window_name,
+         unsigned int screen_width, 
+         unsigned int screen_height,
+         unsigned int screen_x_position = 0, 
+         unsigned int screen_y_position = 0): 
+         window(window_name,screen_width,screen_height,screen_x_position,screen_y_position),
+         shader("./shader.vert","./shader.frag") {
 
-    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    // glEnable(GL_DEPTH_TEST);
 
-    //load default shader
-    shader = Shader("./shader.vert","./shader.frag");
-    shader.use();  
+		glm::mat4 transform_matrix = glm::mat4(1.0f);
+    glm::mat4 view_matrix = glm::mat4(1.0f);
+		glm::mat4 projection_matrix = glm::mat4(1.0f);
+		
+		shader.setUniformMat4("transform",transform_matrix);
+		shader.setUniformMat4("view",view_matrix);
+		shader.setUniformMat4("projection",projection_matrix);
 
     camera = Camera(glm::vec3(0.0f, 0.0f, 5.0f));
   }
 
   ~Render() {
-    shader.deleteShader();
   }
+
+  Window<WindowType> window;
+  Shader shader;
+  Camera camera;
 
   Triangle triangle;
   Square square;
+  Cube cube;
 
   glm::mat4 transform = glm::mat4(1.0f);
 
-  Shader shader;
-  Camera camera;
-  Event event_handler;
-
-  void clear() {
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  }
-
-
-  void drawTriangle() {
+  void drawTriangle() const {
     triangle.draw();
   }
 
-  void drawSquare() {
+  void drawSquare() const {
     square.draw();
   }
 
+  void drawCube() const {
+    cube.draw();
+  }
 
   void pushMatrix() {
 
@@ -71,17 +84,16 @@ struct Render {
 		shader.setUniformMat4("transform",transform);
   }
 
+  void cameraBegin() const {
 
-  void cameraBegin() {
-
-		glm::mat4 view_matrix = camera.GetViewMatrix();
-		glm::mat4 projection_matrix = glm::perspective(glm::radians(45.0f), 800.0f / 800.0f, 0.1f, 100.0f);
+		glm::mat4 view_matrix = camera.getViewMatrix();
+		glm::mat4 projection_matrix = glm::perspective(glm::radians(45.0f), 800.0f / 800.0f, 0.1f, 1000.0f);
 		
 		shader.setUniformMat4("view",view_matrix);
 		shader.setUniformMat4("projection",projection_matrix);
   }
 
-  void cameraEnd() {
+  void cameraEnd() const {
 
 		glm::mat4 view_matrix = glm::mat4(1.0f);
 		glm::mat4 projection_matrix = glm::mat4(1.0f);
@@ -90,34 +102,24 @@ struct Render {
 		shader.setUniformMat4("projection",projection_matrix);
   }
 
-  void background(const glm::vec4& color) {
+  void clear() const {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  }
+
+  void background(const glm::vec4& color) const {
 		glClearColor(color.x,color.y,color.z,color.w);
   }
 
-  template<class Lambda>
-  void draw(const Window& window, const Lambda& lambda) {
-    
-    clear();
-
-    lambda();
-
-    //swap buffers
-		glfwSwapBuffers(window.window_ptr);
+  void setColor(const glm::vec4& color) const{
+		shader.setUniformVec4("color",color);		
   }
 
-  template<class Lambda_1, class Lambda_2, class Lambda_3, class Lambda_4>
-  void run(const Window& window, const Lambda_1& setup_lambda, 
-           const Lambda_2& update_lambda, const Lambda_3& draw_lambda, 
-           const Lambda_4& event_lambda) {
-
-    setup_lambda();
+  template<class SetupFunction, class UpdateFunction, class DrawFunction, class EventFunction>
+  void loop(const SetupFunction& setupFunction, const UpdateFunction& updateFunction, 
+            const DrawFunction& drawFunction, const EventFunction& eventFunction,
+            const bool& print_clock = false) {
     
-    while (!glfwWindowShouldClose(window.window_ptr)) {
-
-		  event_handler.run(window.window_ptr,&camera,event_lambda);
-      update_lambda();
-      draw(window,draw_lambda);
-    }
+    setupFunction();
+    window.loop(&camera,updateFunction,drawFunction,eventFunction,[&](){clear();},print_clock);
   }
-
 };

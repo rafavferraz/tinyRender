@@ -10,11 +10,12 @@
 enum class CameraMovement { FORWARD, BACKWARD, UP, DOWN, LEFT, RIGHT };
 
 //default camera values
-const float YAW         = -90.0f;
-const float PITCH       =  0.0f;
-const float SPEED       =  2.5f;
-const float SENSITIVITY =  0.1f;
-const float ZOOM        =  45.0f;
+const float YAW          = -90.0f;
+const float PITCH        =  0.0f;
+const float SPEED        =  2.5f;
+const float SCROLL_SPEED =  5000.0f;
+const float SENSITIVITY  =  0.1f;
+const float ZOOM         =  45.0f;
 
 struct Camera {
 
@@ -27,20 +28,37 @@ struct Camera {
          world_up(up),
          yaw(yaw),
          pitch(pitch),
-         movement_speed(SPEED), 
+         movement_speed(SPEED),
+         scroll_speed(SCROLL_SPEED), 
          mouse_sensitivity(SENSITIVITY), 
          zoom(ZOOM) {
 
     updateCameraVectors();
   }
 
+  glm::vec3 position;
+  glm::vec3 front;
+  glm::vec3 up;
+  glm::vec3 right;
+  glm::vec3 world_up;
+
+  //euler angles
+  float yaw;
+  float pitch;
+
+  //camera options
+  float movement_speed;
+  float scroll_speed;
+  float mouse_sensitivity;
+  float zoom;
+
   void updateCameraVectors() {
     
     //calculate new front vector
     glm::vec3 front;
-    front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-    front.y = sin(glm::radians(pitch));
-    front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+    front.x = std::cos(glm::radians(yaw)) * std::cos(glm::radians(pitch));
+    front.y = std::sin(glm::radians(pitch));
+    front.z = std::sin(glm::radians(yaw)) * std::cos(glm::radians(pitch));
     front = glm::normalize(front);
 
     //re-calculate the right and up vector
@@ -48,18 +66,19 @@ struct Camera {
     up = glm::normalize(glm::cross(right, front));
   }
 
-  glm::mat4 GetViewMatrix() {
+  glm::mat4 getViewMatrix() const {
     return glm::lookAt(position, position + front, up);
   }
 
-  void ProcessKeyboard(CameraMovement direction, float delta_time = 0.05f) {
+  void processKeyboard(CameraMovement direction, double delta_time) {
   
     float velocity = movement_speed * delta_time;
+    float scroll_velocity = scroll_speed * delta_time;
 
     if (direction == CameraMovement::FORWARD)
-      position += front * velocity * 5.0f;
+      position += front * scroll_velocity;
     else if (direction == CameraMovement::BACKWARD)
-      position -= front * velocity * 5.0f;
+      position -= front * scroll_velocity;
     else if (direction == CameraMovement::LEFT)
       position -= right * velocity;
     else if (direction == CameraMovement::RIGHT)
@@ -70,19 +89,14 @@ struct Camera {
       position -= up * velocity;
   }
 
-  glm::vec3 position;
-  glm::vec3 front;
-  glm::vec3 up;
-  glm::vec3 right;
-  glm::vec3 world_up;
+  void setPosition(const glm::vec3& new_position) {
 
-  //euler Angles
-  float yaw;
-  float pitch;
+    position = new_position;
+    updateCameraVectors();
+  }
 
-  //camera options
-  float movement_speed;
-  float mouse_sensitivity;
-  float zoom;
+  // void lookAt() {
+  //   //...
+  // }
 
 };
