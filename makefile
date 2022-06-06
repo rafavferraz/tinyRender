@@ -5,8 +5,8 @@ CXX = g++
 
 CXXFLAGS = -O3 -march=native -std=c++2a -Wall -Wfatal-errors
 CXXLIBS = -L/usr/local/cuda/lib64 -lcuda -lcudart -ltbb -pthread \
-	./dependencies/glad/lib/libglad.a -lglfw -lX11 -lpthread -lXrandr -lXi -ldl \
-
+	./dependencies/glad/lib/libglad.a -lglfw -lpthread  \
+# ./dependencies/glad/lib/libglad.a -lglfw -lX11 -lpthread -lXrandr -lXi -ldl \
 
 INC_FOLDER = ./include
 SRC_FOLDER = ./src

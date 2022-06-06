@@ -1,4 +1,6 @@
 #include <random>
+#include<chrono>
+#include<thread>
 
 #include "../../utility/print.h"
 
@@ -9,14 +11,19 @@ int main() {
 
 	Render<window::GLFW> render("Test Window",800,600,0,1600);
 
+	std::mt19937_64 rng(std::random_device{}());
+	std::uniform_int_distribution<int> distribution(-10.0,10.0);
+
 
 	auto setup = [&](){
 		
-		render.camera.setPosition(glm::vec3(0.0f, 0.0f, 5.0f));
+		render.camera.setPosition(glm::vec3(0.0f,0.0f,10.0f));
 	};
 
 	auto update = [&](){
 
+		// std::this_thread::sleep_for(std::chrono::nanoseconds(10));
+    // std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::seconds(1));
 	};
 
 	auto draw = [&]() {
@@ -25,11 +32,37 @@ int main() {
 
 		render.cameraBegin();
 
-		render.pushMatrix();
+		render.drawAxis();
 
-			render.setColor(glm::vec4(1.0f, 0.5f, 0.2f, 1.0f));
+    render.pushMatrix();
 
-			render.drawSquare();
+		// auto point_a = glm::vec3(distribution(rng),distribution(rng),0.0);
+		// auto point_b = glm::vec3(distribution(rng),distribution(rng),0.0);
+
+		// auto point_a = glm::vec3(13.0,2.0,0.0);
+		// auto point_b = glm::vec3(3.0,6.0,0.0);
+
+
+// //anchor spots
+// 		render.setColor(glm::vec4(1.0f,0.0f,0.0f,1.0f));
+
+// 		render.drawTriangle(point_a);
+// 		render.drawTriangle(point_b);
+
+// //render
+// 		render.pushMatrix();
+
+// 			render.setColor(glm::vec4(1.0f,0.5f,0.2f,0.6f));
+// 			render.drawLine(point_a,point_b);
+
+
+			render.setColor(glm::vec4(1.0f,0.5f,0.2f,0.6f));
+
+			// render.drawTriangle(glm::vec3(0.0,0.0,0.0));
+			// render.drawRectangle(glm::vec3(0.0,0.0,0.0),1.0,1.0);
+			render.drawCircle(glm::vec3(0.0,0.0,0.0),1.0,true);
+			// render.drawCube();
+
 
 		render.popMatrix();
 
@@ -37,7 +70,6 @@ int main() {
 	};
 
 	auto event = [&](){
-
 
 	};
 
@@ -60,6 +92,43 @@ int main() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			// render.setColor(glm::vec4(1.0f,0.5f,0.2f,1.0f));
+
+			// // render.scale(glm::vec3(2.0,2.0,1.0));
+			// // render.rotate(glm::radians(45.0),glm::vec3(0.0,0.0,1.0));
+			// // render.translate(glm::vec3(1.0,1.0,0.0));
+
+			// // render.drawRectangle(glm::vec3(0.0,0.0,0.0),1.0,2.0,false);
+
+			// // render.drawRectangle(glm::vec3(0.0,0.0,0.0),glm::radians(45.0),1.0,1.0,true);
+
+			// glm::mat4 transform = glm::mat4(1.0f);
+
+      // transform = glm::translate(transform,glm::vec3(0.25,0.25,0.0));
+      // transform = glm::rotate(transform,(float)glm::radians(45.0),glm::vec3(0.0,0.0,1.0));
+
+			// // OUTPUT(glm::to_string(transform))
+			
+			// render.drawRectangle(transform,1.0,1.0,true);
 
 
 
