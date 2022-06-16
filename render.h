@@ -32,12 +32,10 @@ struct Render {
 
     initialize();
 
-		glm::mat4 transform_matrix = glm::mat4(1.0f);
 		glm::mat4 model_matrix = glm::mat4(1.0f);
     glm::mat4 view_matrix = glm::mat4(1.0f);
 		glm::mat4 projection_matrix = glm::mat4(1.0f);
 		
-		shader.setUniformMat4("transform",transform_matrix);
 		shader.setUniformMat4("model",model_matrix);
 		shader.setUniformMat4("view",view_matrix);
 		shader.setUniformMat4("projection",projection_matrix);
@@ -91,6 +89,33 @@ struct Render {
       fill(fill_shape);
 			translate(center);
       triangle.draw();
+
+    popMatrix();
+  }
+
+  void drawTriangle(const glm::vec3& center, const float& width, const float& height, const bool& fill_shape = true) {
+    
+    pushMatrix();
+
+      fill(fill_shape);
+			translate(center);
+      scale(glm::vec3(width,height,0.0));
+      triangle.draw();
+
+    popMatrix();
+  }
+
+  void loadTriangleInstanced(const std::vector<glm::vec3>& position) {
+    triangle.loadInstanced(position);
+  }
+
+  void drawTriangleInstanced(const int& count, const float& width, const float& height, const bool& fill_shape = true) {
+
+    pushMatrix();
+
+      fill(fill_shape);
+      scale(glm::vec3(width,height,0.0));
+      triangle.drawInstanced(count);
 
     popMatrix();
   }
@@ -153,6 +178,22 @@ struct Render {
     popMatrix();
   }
 
+  void loadRectangleInstanced(const std::vector<glm::vec3>& position) {
+    square.loadInstanced(position);
+  }
+
+  void drawRectangleInstanced(const int& count, const float& width, 
+                              const float& height, const bool& fill_shape = true) {
+
+    pushMatrix();
+
+      fill(fill_shape);
+      scale(glm::vec3(width,height,0.0));
+      square.drawInstanced(count);
+
+    popMatrix();
+  }
+
   void drawCircle(const glm::vec3& center, const float& radius, const bool& fill_shape = true) {
 
     pushMatrix();
@@ -161,6 +202,21 @@ struct Render {
       translate(center);
       scale(glm::vec3(radius,radius,0.0));
       circle.draw();
+
+    popMatrix();
+  }
+
+  void loadCircleInstanced(const std::vector<glm::vec3>& position) {
+    circle.loadInstanced(position);
+  }
+
+  void drawCircleInstanced(const int& count, const float& radius, const bool& fill_shape = true) {
+
+    pushMatrix();
+
+      fill(fill_shape);
+      scale(glm::vec3(radius,radius,0.0));
+      circle.drawInstanced(count);
 
     popMatrix();
   }
@@ -187,7 +243,7 @@ struct Render {
       setColor(glm::vec4(0.0f,1.0f,0.0f,1.0f));
       drawLine(glm::vec3(0.0,0.0,0.0),glm::vec3(0.0,1.0,0.0));
 
-//drawLine does not work with 3D yet...
+      //drawLine does not work with 3D yet...
       // //z-axis, blue
       // setColor(glm::vec4(0.0f,0.0f,1.0f,1.0f));
       // drawLine(glm::vec3(0.0,0.0,0.0),glm::vec3(0.0,0.0,1.0));
@@ -236,7 +292,7 @@ struct Render {
     auto aspect_ratio = (float)screen_width / screen_height;
     // OUTPUT(screen_width,screen_height)
 
-    float near_clip = 0.1f;
+    float near_clip = 0.01f;
     float far_clip = 1000.0f;
     float fov = glm::radians(45.0f);
 

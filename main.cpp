@@ -1,6 +1,6 @@
 #include <random>
-#include<chrono>
-#include<thread>
+#include <chrono>
+#include <thread>
 
 #include "../../utility/print.h"
 
@@ -9,15 +9,35 @@
 
 int main() {
 
-	Render<window::GLFW> render("Test Window",800,600,0,1600);
+	Render<window::GLFW> render("Test Window",1200,900,0,1600);
 
 	std::mt19937_64 rng(std::random_device{}());
-	std::uniform_int_distribution<int> distribution(-10.0,10.0);
+	std::uniform_real_distribution<float> distribution(-10.0,10.0);
 
+	// const int N = 1000;//000;//30'000;
+	std::vector<glm::vec3> position;
 
 	auto setup = [&](){
 		
-		render.camera.setPosition(glm::vec3(0.0f,0.0f,10.0f));
+		render.camera.setPosition(glm::vec3(0.0f,0.0f,5.0f));
+
+		// for (int i = 0; i < N; ++i) {
+
+		// 	float x = distribution(rng);
+		// 	float y = distribution(rng);
+
+		// 	position.push_back(glm::vec3(x,y,0.0f));
+		// }
+
+		position.push_back(glm::vec3(0.0,0.0,0.0));
+		position.push_back(glm::vec3(1.0,0.0,0.0));
+		position.push_back(glm::vec3(0.0,1.0,0.0));
+		position.push_back(glm::vec3(1.0,1.0,0.0));
+
+		// render.loadTriangleInstanced(position);
+		// render.loadRectangleInstanced(position);
+		render.loadCircleInstanced(position);
+
 	};
 
 	auto update = [&](){
@@ -36,32 +56,27 @@ int main() {
 
     render.pushMatrix();
 
-		// auto point_a = glm::vec3(distribution(rng),distribution(rng),0.0);
-		// auto point_b = glm::vec3(distribution(rng),distribution(rng),0.0);
+			render.setColor(glm::vec4(1.0f,0.0f,0.0f,0.4f));
 
-		// auto point_a = glm::vec3(13.0,2.0,0.0);
-		// auto point_b = glm::vec3(3.0,6.0,0.0);
-
-
-// //anchor spots
-// 		render.setColor(glm::vec4(1.0f,0.0f,0.0f,1.0f));
-
-// 		render.drawTriangle(point_a);
-// 		render.drawTriangle(point_b);
-
-// //render
-// 		render.pushMatrix();
-
-// 			render.setColor(glm::vec4(1.0f,0.5f,0.2f,0.6f));
-// 			render.drawLine(point_a,point_b);
-
-
+			render.drawTriangle(glm::vec3(0.0,0.0,0.0));
+			render.drawTriangle(glm::vec3(1.0,0.0,0.0));
+			render.drawTriangle(glm::vec3(0.0,1.0,0.0));
+			render.drawTriangle(glm::vec3(1.0,1.0,0.0));
+			
 			render.setColor(glm::vec4(1.0f,0.5f,0.2f,0.6f));
 
-			// render.drawTriangle(glm::vec3(0.0,0.0,0.0));
-			// render.drawRectangle(glm::vec3(0.0,0.0,0.0),1.0,1.0);
-			render.drawCircle(glm::vec3(0.0,0.0,0.0),1.0,true);
-			// render.drawCube();
+			// for (int i = 0; i < position.size(); ++i) {
+
+			// 	// render.drawTriangle(position.at(i));
+
+			// 	render.setColor(glm::vec4(0.5f * i,0.5f * i,0.2f * i,0.4f));
+			// 	render.drawRectangle(position.at(i),1.0,1.0);
+			// 	// render.drawCircle(position.at(i),0.5);
+			// }
+
+			// render.drawTriangleInstanced(position.size(),1.0,1.0);
+			// render.drawRectangleInstanced(position.size(),1.0,1.0);
+			render.drawCircleInstanced(position.size(),0.5);
 
 
 		render.popMatrix();
@@ -103,6 +118,37 @@ int main() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+		// auto point_a = glm::vec3(distribution(rng),distribution(rng),0.0);
+		// auto point_b = glm::vec3(distribution(rng),distribution(rng),0.0);
+
+		// auto point_a = glm::vec3(13.0,2.0,0.0);
+		// auto point_b = glm::vec3(3.0,6.0,0.0);
+
+
+// //anchor spots
+// 		render.setColor(glm::vec4(1.0f,0.0f,0.0f,1.0f));
+
+// 		render.drawTriangle(point_a);
+// 		render.drawTriangle(point_b);
+
+// //render
+// 		render.pushMatrix();
+
+// 			render.setColor(glm::vec4(1.0f,0.5f,0.2f,0.6f));
+// 			render.drawLine(point_a,point_b);
 
 
 

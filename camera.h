@@ -13,7 +13,7 @@ enum class CameraMovement { FORWARD, BACKWARD, UP, DOWN, LEFT, RIGHT };
 const float YAW          = -90.0f;
 const float PITCH        =  0.0f;
 const float SPEED        =  2.5f;
-const float SCROLL_SPEED =  5000.0f;
+const float SCROLL_SPEED =  250.0f * 10; //5'000
 const float SENSITIVITY  =  0.1f;
 const float ZOOM         =  45.0f;
 

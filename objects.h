@@ -14,6 +14,7 @@ struct Object {
 
   unsigned int VAO;
   unsigned int VBO;
+  unsigned int VBO_Instance;
   unsigned int EBO;
 
   std::vector<float> vertices;
@@ -27,6 +28,8 @@ struct Triangle : public Object {
 
   Triangle() {
     load();
+    loadInstanced();  //this makes sure vertex_positions in shader is defaulted to vec3(0,0,0) 
+                     //necessary if simple Draw() is used, instead of instancedDraw()
   }
 
   ~Triangle() {
@@ -59,10 +62,36 @@ struct Triangle : public Object {
     glBindVertexArray(0); 
   }
 
+  void loadInstanced(const std::vector<glm::vec3>& position = { glm::vec3(0.0,0.0,0.0)}) {
+
+    glBindVertexArray(VAO);
+
+    glGenBuffers(1,&VBO_Instance);
+    glBindBuffer(GL_ARRAY_BUFFER,VBO_Instance);
+    glBufferData(GL_ARRAY_BUFFER,position.size() * sizeof(glm::vec3), 
+      &position[0], GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0); 
+
+    glEnableVertexAttribArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER,VBO_Instance);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);	
+    glVertexAttribDivisor(1, 1);  
+
+    glBindVertexArray(0);
+  }
+
   void draw() const {
 
     glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
+    glBindVertexArray(0);
+  }
+
+  void drawInstanced(const int& count) const {
+
+    glBindVertexArray(VAO);
+    glDrawArraysInstanced(GL_TRIANGLES,0,3,count);
     glBindVertexArray(0);
   }
 };
@@ -71,6 +100,8 @@ struct Square : public Object {
 
   Square() {
     load();
+    loadInstanced();  //this make sure vertex_positions in shader is defaulted to vec3(0,0,0) 
+                     //necessary if instancedDraw() is not used
   }
 
   ~Square() {
@@ -117,10 +148,36 @@ struct Square : public Object {
     glBindVertexArray(0); 
   }
 
+  void loadInstanced(const std::vector<glm::vec3>& position = { glm::vec3(0.0,0.0,0.0)}) {
+
+    glBindVertexArray(VAO);
+
+    glGenBuffers(1,&VBO_Instance);
+    glBindBuffer(GL_ARRAY_BUFFER,VBO_Instance);
+    glBufferData(GL_ARRAY_BUFFER,position.size() * sizeof(glm::vec3), 
+      &position[0], GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0); 
+
+    glEnableVertexAttribArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER,VBO_Instance);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);	
+    glVertexAttribDivisor(1, 1);  
+
+    glBindVertexArray(0);
+  }
+
   void draw() const {
 
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
+  }
+
+  void drawInstanced(const int& count) const {
+
+    glBindVertexArray(VAO);
+    glDrawElementsInstanced(GL_TRIANGLES,6,GL_UNSIGNED_INT,0,count);
     glBindVertexArray(0);
   }
 };
@@ -128,7 +185,10 @@ struct Square : public Object {
 struct Circle : public Object {
 
   Circle() {
+
     load();
+    loadInstanced();  //this make sure vertex_positions in shader is defaulted to vec3(0,0,0) 
+                     //necessary if instancedDraw() is not used
   }
 
   ~Circle() {
@@ -191,10 +251,36 @@ struct Circle : public Object {
     glBindVertexArray(0); 
   }
 
+  void loadInstanced(const std::vector<glm::vec3>& position = { glm::vec3(0.0,0.0,0.0)}) {
+
+    glBindVertexArray(VAO);
+
+    glGenBuffers(1,&VBO_Instance);
+    glBindBuffer(GL_ARRAY_BUFFER,VBO_Instance);
+    glBufferData(GL_ARRAY_BUFFER,position.size() * sizeof(glm::vec3), 
+      &position[0], GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0); 
+
+    glEnableVertexAttribArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER,VBO_Instance);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);	
+    glVertexAttribDivisor(1, 1);  
+
+    glBindVertexArray(0);
+  }
+
   void draw() const {
 
     glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, indexes.size() * 3, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, indexes.size(), GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
+  }
+
+  void drawInstanced(const int& count) const {
+
+    glBindVertexArray(VAO);
+    glDrawElementsInstanced(GL_TRIANGLES,indexes.size(),GL_UNSIGNED_INT,0,count);
     glBindVertexArray(0);
   }
 };
@@ -203,6 +289,8 @@ struct Cube : public Object {
 
   Cube() {
     load();
+    loadInstanced();  //this make sure vertex_positions in shader is defaulted to vec3(0,0,0) 
+                     //necessary if instancedDraw() is not used
   }
 
   ~Cube() {
@@ -263,10 +351,35 @@ struct Cube : public Object {
     glBindVertexArray(0); 
   }
 
+  void loadInstanced(const std::vector<glm::vec3>& position = { glm::vec3(0.0,0.0,0.0)}) {
+
+    glBindVertexArray(VAO);
+
+    glGenBuffers(1,&VBO_Instance);
+    glBindBuffer(GL_ARRAY_BUFFER,VBO_Instance);
+    glBufferData(GL_ARRAY_BUFFER,position.size() * sizeof(glm::vec3), 
+      &position[0], GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0); 
+
+    glEnableVertexAttribArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER,VBO_Instance);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);	
+    glVertexAttribDivisor(1, 1);  
+
+    glBindVertexArray(0);
+  }
   void draw() const {
 
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
   }
-};
+
+  void drawInstanced(const int& count) const {
+
+    glBindVertexArray(VAO);
+    glDrawElementsInstanced(GL_TRIANGLES,36,GL_UNSIGNED_INT,0,count);
+    glBindVertexArray(0);
+  }
+};  
