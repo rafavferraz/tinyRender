@@ -14,29 +14,34 @@ int main() {
 	std::mt19937_64 rng(std::random_device{}());
 	std::uniform_real_distribution<float> distribution(-10.0,10.0);
 
-	// const int N = 1000;//000;//30'000;
+	// const int N = 30'000;
+	const int N = 1024 * 1024 / 2;  //50% sparse
+	// const int N = 8192 * 8192 / 2;  //50% sparse
+	// const int N = 16384 * 16384 / 2;  //50% sparse
+	// const int N = 32768 * 32768 / 2;  //50% sparse
+
 	std::vector<glm::vec3> position;
 
 	auto setup = [&](){
 		
-		render.camera.setPosition(glm::vec3(0.0f,0.0f,5.0f));
+		render.camera.setPosition(glm::vec3(0.0f,0.0f,15.0f));
 
-		// for (int i = 0; i < N; ++i) {
+		for (int i = 0; i < N; ++i) {
 
-		// 	float x = distribution(rng);
-		// 	float y = distribution(rng);
+			float x = distribution(rng);
+			float y = distribution(rng);
 
-		// 	position.push_back(glm::vec3(x,y,0.0f));
-		// }
+			position.push_back(glm::vec3(x,y,0.0f));
+		}
 
-		position.push_back(glm::vec3(0.0,0.0,0.0));
-		position.push_back(glm::vec3(1.0,0.0,0.0));
-		position.push_back(glm::vec3(0.0,1.0,0.0));
-		position.push_back(glm::vec3(1.0,1.0,0.0));
+		// position.push_back(glm::vec3(0.0,0.0,0.0));
+		// position.push_back(glm::vec3(1.0,0.0,0.0));
+		// position.push_back(glm::vec3(0.0,1.0,0.0));
+		// position.push_back(glm::vec3(1.0,1.0,0.0));
 
 		// render.loadTriangleInstanced(position);
-		// render.loadRectangleInstanced(position);
-		render.loadCircleInstanced(position);
+		render.loadRectangleInstanced(position);
+		// render.loadCircleInstanced(position);
 
 	};
 
@@ -56,28 +61,18 @@ int main() {
 
     render.pushMatrix();
 
-			render.setColor(glm::vec4(1.0f,0.0f,0.0f,0.4f));
+			render.setColor(glm::vec4(1.0f,0.5f,0.2f,0.4f));
 
-			render.drawTriangle(glm::vec3(0.0,0.0,0.0));
-			render.drawTriangle(glm::vec3(1.0,0.0,0.0));
-			render.drawTriangle(glm::vec3(0.0,1.0,0.0));
-			render.drawTriangle(glm::vec3(1.0,1.0,0.0));
-			
-			render.setColor(glm::vec4(1.0f,0.5f,0.2f,0.6f));
+			// for (unsigned int i = 0; i < position.size(); ++i) {
 
-			// for (int i = 0; i < position.size(); ++i) {
-
-			// 	// render.drawTriangle(position.at(i));
-
-			// 	render.setColor(glm::vec4(0.5f * i,0.5f * i,0.2f * i,0.4f));
-			// 	render.drawRectangle(position.at(i),1.0,1.0);
-			// 	// render.drawCircle(position.at(i),0.5);
+			// 	// render.drawTriangle(position.at(i),0.025,0.025);
+			// 	render.drawRectangle(position.at(i),0.025,0.025);
+			// 	// render.drawCircle(position.at(i),0.025);
 			// }
 
 			// render.drawTriangleInstanced(position.size(),1.0,1.0);
-			// render.drawRectangleInstanced(position.size(),1.0,1.0);
-			render.drawCircleInstanced(position.size(),0.5);
-
+			render.drawRectangleInstanced(position.size(),0.025,0.025);
+			// render.drawCircleInstanced(position.size(),0.5);
 
 		render.popMatrix();
 

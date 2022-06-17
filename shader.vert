@@ -1,7 +1,7 @@
 #version 460 core
 
 layout (location = 0) in vec3 vertex_position; //instanced attribute
-layout (location = 1) in vec3 model_position;  //regular center_of_mass
+layout (location = 1) in vec3 model_position;  //object's position of center_of_mass
 
 uniform mat4 model;       //render.pushMatrix()
 uniform mat4 view;        //render.cameraBegin()

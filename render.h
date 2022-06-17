@@ -73,13 +73,17 @@ struct Render {
   void drawLine(const glm::vec3& point_a,
                 const glm::vec3& point_b,
                 const float& line_width = 0.05) {
+    
+    pushMatrix();
 
-    auto point_m = (point_a + point_b) / 2.0f;
-    auto point_c = point_b - point_a;
-    float mag_c = glm::length(point_c);
-    double angle_z = std::atan2(point_c[1],point_c[0]);
+      auto point_m = (point_a + point_b) / 2.0f;
+      auto point_c = point_b - point_a;
+      float mag_c = glm::length(point_c);
+      double angle_z = std::atan2(point_c[1],point_c[0]);
 
-    drawRectangle(point_m,angle_z,mag_c,line_width,true);
+      drawRectangle(point_m,angle_z,mag_c,line_width,true);
+
+    popMatrix();
   }
 
   void drawTriangle(const glm::vec3& center, const bool& fill_shape = true) {
