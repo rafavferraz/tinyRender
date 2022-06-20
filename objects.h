@@ -1049,3 +1049,127 @@ struct Cylinder : public Object {
     glBindVertexArray(0);
   }
 };
+
+struct Mesh : public Object {
+
+  Mesh() {
+
+    load();
+    loadInstanced();  
+  }
+
+  ~Mesh() {
+
+    glDeleteVertexArrays(1,&VAO);
+    glDeleteBuffers(1,&VBO);
+	  glDeleteBuffers(1,&EBO);
+
+    glDeleteVertexArrays(1,&VAO_Instanced);
+    glDeleteBuffers(1,&VBO_Instanced);
+    glDeleteBuffers(1,&VBO_Instanced_position);
+	  glDeleteBuffers(1,&EBO_Instanced);
+  }
+
+  void loadVertices(const std::vector<glm::vec3>& new_vertices) {
+
+    vertices.clear();
+
+    for (unsigned int i = 0; i < new_vertices.size(); ++i) {
+
+      vertices.push_back(new_vertices.at(i)[0]);
+      vertices.push_back(new_vertices.at(i)[1]);
+      vertices.push_back(new_vertices.at(i)[2]);
+    }
+  }
+
+  void loadIndices(const std::vector<int>& new_indexes) {
+
+    indexes.clear();
+
+    for (unsigned int i = 0; i < new_indexes.size(); ++i) {
+      indexes.push_back(new_indexes.at(i));
+    }
+  }
+
+  void load() {
+
+    glGenVertexArrays(1,&VAO);
+    glGenBuffers(1,&VBO);
+    glGenBuffers(1, &EBO);
+
+    glBindVertexArray(VAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER,VBO);
+
+    glBufferData(GL_ARRAY_BUFFER,vertices.size() * sizeof(float),
+      &vertices[0], GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexes.size() * sizeof(unsigned int), 
+      &indexes[0], GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0); 
+    glBindVertexArray(0); 
+  }
+
+  void loadInstanced() {
+
+    static std::vector<glm::vec3> position = { glm::vec3(0.0,0.0,0.0) };
+    loadInstanced(position);
+  }
+
+  void loadInstanced(const std::vector<glm::vec3>& position) {
+
+    glGenVertexArrays(1,&VAO_Instanced);
+    glGenBuffers(1,&VBO_Instanced);
+    glGenBuffers(1,&EBO_Instanced);
+
+    glBindVertexArray(VAO_Instanced);
+
+    glBindBuffer(GL_ARRAY_BUFFER,VBO_Instanced);
+
+    glBufferData(GL_ARRAY_BUFFER,vertices.size() * sizeof(float),
+      &vertices[0], GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,EBO_Instanced);
+
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexes.size() * sizeof(unsigned int), 
+      &indexes[0], GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    //instance buffer loading
+    glGenBuffers(1,&VBO_Instanced_position);
+    glBindBuffer(GL_ARRAY_BUFFER,VBO_Instanced_position);
+    glBufferData(GL_ARRAY_BUFFER,position.size() * sizeof(glm::vec3), 
+      &position[0], GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0); 
+
+    glEnableVertexAttribArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER,VBO_Instanced_position);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);	
+    glVertexAttribDivisor(1, 1);  
+
+    glBindVertexArray(0);
+  }
+
+  void draw() const {
+
+    glBindVertexArray(VAO);
+    glDrawElements(GL_TRIANGLES, indexes.size(), GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
+  }
+
+  void drawInstanced(const int& count) const {
+
+    glBindVertexArray(VAO_Instanced);
+    glDrawElementsInstanced(GL_TRIANGLES,indexes.size(),GL_UNSIGNED_INT,0,count);
+    glBindVertexArray(0);
+  }
+};
