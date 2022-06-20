@@ -11,6 +11,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include <glm/gtx/io.hpp>
+#include <glm/gtx/transform.hpp>
+#include <glm/gtx/rotate_vector.hpp>
 
 #include "camera.h"
 #include "shader.h"
@@ -52,6 +54,9 @@ struct Render {
   Square square;
   Circle circle;
   Cube cube;
+  Sphere sphere;
+  Cone cone;
+  Cylinder cylinder;
 
   glm::mat4 model_matrix = glm::mat4(1.0f);
 
@@ -59,7 +64,8 @@ struct Render {
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    // glEnable(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_MULTISAMPLE); 
   }
 
   void fill(const bool& fill_shape) {
@@ -68,22 +74,6 @@ struct Render {
       glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
     else
       glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-  }
-
-  void drawLine(const glm::vec3& point_a,
-                const glm::vec3& point_b,
-                const float& line_width = 0.05) {
-    
-    pushMatrix();
-
-      auto point_m = (point_a + point_b) / 2.0f;
-      auto point_c = point_b - point_a;
-      float mag_c = glm::length(point_c);
-      double angle_z = std::atan2(point_c[1],point_c[0]);
-
-      drawRectangle(point_m,angle_z,mag_c,line_width,true);
-
-    popMatrix();
   }
 
   void drawTriangle(const glm::vec3& center, const bool& fill_shape = true) {
@@ -151,12 +141,15 @@ struct Render {
     popMatrix();
   }
 
+//width and height? why not scale inside transform?
   void drawRectangle(const glm::mat4& transform, const float& width, 
                      const float& height, const bool& fill_shape = true) {
 
     pushMatrix();
 
       fill(fill_shape);
+
+      // scale(glm::vec3(width,height,0.0));
 
 // new way
       model_matrix = transform * model_matrix;
@@ -225,14 +218,149 @@ struct Render {
     popMatrix();
   }
 
-  void drawCube() {
+  void drawCube(const glm::vec3& center, const float& width, const float& height,
+                const float& depth, const bool& fill_shape = true) {
 
     pushMatrix();
 
+      fill(fill_shape);
+      translate(center);
+      scale(glm::vec3(width,height,depth));
       cube.draw();
 
     popMatrix();
+  }
 
+  void loadCubeInstanced(const std::vector<glm::vec3>& position) {
+    cube.loadInstanced(position);
+  }
+
+  void drawCubeInstanced(const int& count, const float& width, const float& height,
+                         const float& depth, const bool& fill_shape = true) {
+
+    pushMatrix();
+
+      fill(fill_shape);
+      scale(glm::vec3(width,height,depth));
+      cube.drawInstanced(count);
+
+    popMatrix();
+  }
+
+  void drawSphere(const glm::vec3& center, const float& radius, const bool& fill_shape = true) {
+
+    pushMatrix();
+
+      fill(fill_shape);
+      translate(center);
+      scale(glm::vec3(radius,radius,radius));
+      sphere.draw();
+
+    popMatrix();
+  }
+
+  void loadSphereInstanced(const std::vector<glm::vec3>& position) {
+    sphere.loadInstanced(position);
+  }
+
+  void drawSphereInstanced(const int& count, const float& radius, const bool& fill_shape = true) {
+
+    pushMatrix();
+
+      fill(fill_shape);
+      scale(glm::vec3(radius,radius,radius));
+      sphere.drawInstanced(count);
+
+    popMatrix();
+  }
+
+  void drawCone(const glm::vec3& center, const float& radius, const float& height,
+                const bool& fill_shape = true) {
+
+    pushMatrix();
+
+      fill(fill_shape);
+      translate(center);
+      scale(glm::vec3(radius,radius,height));
+      cone.draw();
+
+    popMatrix();
+  }
+
+//is this a easier call??
+  void drawCone(const glm::vec3& center, glm::mat4& rotation,
+                const float& radius, const float& height,
+                const bool& fill_shape = true) {
+
+    pushMatrix();
+
+      fill(fill_shape);
+      translate(center);
+      rotate(rotation);
+      scale(glm::vec3(radius,radius,height));
+      cone.draw();
+
+    popMatrix();
+  }
+
+  void loadConeInstanced(const std::vector<glm::vec3>& position) {
+    cone.loadInstanced(position);
+  }
+
+  void drawConeInstanced(const int& count, const float& radius, const float& height, 
+                         const bool& fill_shape = true) {
+
+    pushMatrix();
+
+      fill(fill_shape);
+      scale(glm::vec3(radius,radius,height));
+      cone.drawInstanced(count);
+
+    popMatrix();
+  }
+
+  void drawCylinder(const glm::vec3& center, const float& radius, const float& height,
+                    const bool& fill_shape = true) {
+
+    pushMatrix();
+
+      fill(fill_shape);
+      translate(center);
+      scale(glm::vec3(radius,radius,height));
+      cylinder.draw();
+
+    popMatrix();
+  }
+
+  void drawCylinder(const glm::vec3& center, glm::mat4& rotation,
+                    const float& radius, const float& height,
+                    const bool& fill_shape = true) {
+
+    pushMatrix();
+
+      fill(fill_shape);
+      translate(center);
+      rotate(rotation);
+      scale(glm::vec3(radius,radius,height));
+      cylinder.draw();
+
+    popMatrix();
+  }
+
+  void loadCylinderInstanced(const std::vector<glm::vec3>& position) {
+    cylinder.loadInstanced(position);
+  }
+
+  void drawCylinderInstanced(const int& count, const float& radius, const float& height, 
+                             const bool& fill_shape = true) {
+
+    pushMatrix();
+
+      fill(fill_shape);
+      scale(glm::vec3(radius,radius,height));
+      cylinder.drawInstanced(count);
+
+    popMatrix();
   }
 
   void drawAxis() {
@@ -240,21 +368,27 @@ struct Render {
     pushMatrix();
 
       //x-axis, red
-		  setColor(glm::vec4(1.0f,0.0f,0.0f,1.0f));
-      drawLine(glm::vec3(0.0,0.0,0.0),glm::vec3(1.0,0.0,0.0));
+      setColor(glm::vec4(1.0f,0.0f,0.0f,1.0f));
+      glm::mat4 rotation = glm::rotate(glm::radians(90.0f),glm::vec3(0.0,1.0,0.0));
+      drawCylinder(glm::vec3(0.0,0.0,0.0),rotation,0.025,1.0);
+      drawCone(glm::vec3(1.0,0.0,0.0),rotation,0.05,0.1);
 
       //y-axis, green
       setColor(glm::vec4(0.0f,1.0f,0.0f,1.0f));
-      drawLine(glm::vec3(0.0,0.0,0.0),glm::vec3(0.0,1.0,0.0));
+      rotation = glm::rotate(glm::radians(-90.0f),glm::vec3(1.0,0.0,0.0));
+      drawCylinder(glm::vec3(0.0,0.0,0.0),rotation,0.025,1.0);
+      drawCone(glm::vec3(0.0,1.0,0.0),rotation,0.05,0.1);
 
-      //drawLine does not work with 3D yet...
-      // //z-axis, blue
-      // setColor(glm::vec4(0.0f,0.0f,1.0f,1.0f));
-      // drawLine(glm::vec3(0.0,0.0,0.0),glm::vec3(0.0,0.0,1.0));
+      //z-axis, blue
+      setColor(glm::vec4(0.0f,0.0f,1.0f,1.0f));
+      drawCylinder(glm::vec3(0.0,0.0,0.0),0.025,1.0);
+      drawCone(glm::vec3(0.0,0.0,1.0),0.05,0.1);
 
-      setColor(glm::vec4(1.0f,1.0f,0.0f,1.0f));
-      scale(glm::vec3(0.1,0.1,0.0));
-      circle.draw();
+      //sphere at center
+      // setColor(glm::vec4(1.0f,1.0f,1.0f,1.0f));
+      setColor(glm::vec4(0.0f,0.0f,0.0f,1.0f));
+      scale(glm::vec3(0.075,0.075,0.075));
+      sphere.draw();
 
     popMatrix();
   }
@@ -274,6 +408,12 @@ struct Render {
   void rotate(const float& value_radians, const glm::vec3& axis) {
 
     model_matrix = glm::rotate(model_matrix,value_radians,axis);
+		shader.setUniformMat4("model",model_matrix);
+  }
+
+  void rotate(const glm::mat4& rotation) {
+
+    model_matrix *= rotation;
 		shader.setUniformMat4("model",model_matrix);
   }
 

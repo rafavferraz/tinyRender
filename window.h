@@ -19,13 +19,39 @@ namespace window {
 
 struct State {
 
+  bool mouse_button_left_press = false;
+  bool mouse_button_left_release = true;
+
+  bool mouse_button_middle_press = false;
+  bool mouse_button_middle_release = true;
+
   bool mouse_scroll_up = false;
   bool mouse_scroll_down = false;
+
+  double cursor_x_position = 0.0;
+  double cursor_y_position = 0.0;
+
+  double cursor_x_offset = 0.0;
+  double cursor_y_offset = 0.0;
+
+  void clear() {
+
+    mouse_button_left_press = false;
+    mouse_button_middle_press = false;
+
+    cursor_x_offset = 0.0;
+    cursor_y_offset = 0.0;
+
+    mouse_scroll_up = false;
+    mouse_scroll_down = false;
+  }
 
 } state;
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
+void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 void scrollCallback(GLFWwindow* window, double x_offset, double y_offset);
+void cursorPositionCallback(GLFWwindow* window, double xpos, double ypos);
 
 template<typename WindowType> struct Window;
 
@@ -46,6 +72,7 @@ struct Window<window::GLFW> {
            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, OPENGL_VERSION_MINOR);
            glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
            glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
+           glfwWindowHint(GLFW_SAMPLES, 4);
 
            #ifdef __APPLE__
              glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT,GL_TRUE);
@@ -63,8 +90,8 @@ struct Window<window::GLFW> {
            glfwSetWindowPos(window_ptr,screen_x_position,screen_y_position);
 
            //1 v-syncs to 60 hz, 0 goes as fast as it can...
-           glfwSwapInterval(0);
-           // glfwSwapInterval(1);
+          //  glfwSwapInterval(0);
+           glfwSwapInterval(1);
 
            //load all OpenGL function pointers
            if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
@@ -73,7 +100,12 @@ struct Window<window::GLFW> {
 
            //setting callbacks
            glfwSetFramebufferSizeCallback(window_ptr,framebufferSizeCallback);
+           glfwSetMouseButtonCallback(window_ptr,mouseButtonCallback);
            glfwSetScrollCallback(window_ptr,scrollCallback);  
+           glfwSetCursorPosCallback(window_ptr,cursorPositionCallback);
+
+           //default init maouse position
+           glfwGetCursorPos(window_ptr,&state.cursor_x_position,&state.cursor_y_position);
          }
 
   ~Window() {
@@ -101,17 +133,67 @@ struct Window<window::GLFW> {
       camera->processKeyboard(CameraMovement::DOWN,delta_time);
     else if(glfwGetKey(window_ptr,GLFW_KEY_ESCAPE) == GLFW_PRESS) 
 			glfwSetWindowShouldClose(window_ptr,true);
+
+    //mouse buttons
+    if(state.mouse_button_left_press) {
+			// OUTPUT("button L pressed")
+    }
+
+    else if(state.mouse_button_middle_press) {
+			// OUTPUT("button M pressed")
+    }
+
+    //left button hold condition
+    if(!state.mouse_button_left_release) {
+
+      if (state.cursor_y_offset > 0.0) {
+        camera->processKeyboard(CameraMovement::PITCH_UP,delta_time);
+      }
+
+      else if (state.cursor_y_offset < 0.0) {
+        camera->processKeyboard(CameraMovement::PITCH_DOWN,delta_time);
+      }
+
+      if (state.cursor_x_offset > 0.0) {
+        camera->processKeyboard(CameraMovement::YAW_LEFT,delta_time);
+      }
+
+      else if (state.cursor_x_offset < 0.0) {
+        camera->processKeyboard(CameraMovement::YAW_RIGHT,delta_time);
+      }
+    }
+
+    //middle button hold condition
+    if(!state.mouse_button_middle_release) {
     
+      //checking mouse movement
+      if (state.cursor_y_offset > 0.0) {
+        camera->processKeyboard(CameraMovement::DOWN,delta_time);
+      }
+
+      else if (state.cursor_y_offset < 0.0) {
+        camera->processKeyboard(CameraMovement::UP,delta_time);
+      }
+
+      if (state.cursor_x_offset > 0.0) {
+        camera->processKeyboard(CameraMovement::RIGHT,delta_time);
+      }
+
+      else if (state.cursor_x_offset < 0.0) {
+        camera->processKeyboard(CameraMovement::LEFT,delta_time);
+      }
+    }
+
     //mouse
     if (state.mouse_scroll_up) {
       camera->processKeyboard(CameraMovement::FORWARD,delta_time);  
-      state.mouse_scroll_up = false;
     } 
 
     else if (state.mouse_scroll_down) {
       camera->processKeyboard(CameraMovement::BACKWARD,delta_time);  
-      state.mouse_scroll_down = false;
     }
+
+    state.clear();
   }
 
   template<class UpdateFunction, class DrawFunction, class EventFunction, class ClearFunction>
@@ -161,15 +243,47 @@ void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
   glViewport(0,0,width,height);
 }
 
+void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+
+  //left button
+  if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+    state.mouse_button_left_press = true;
+    state.mouse_button_left_release = false;
+  }
+
+  else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
+    state.mouse_button_left_press = false;
+    state.mouse_button_left_release = true;
+  }
+
+  //middle button
+  if (button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_PRESS) {
+    state.mouse_button_middle_press = true;
+    state.mouse_button_middle_release = false;
+  }
+
+  else if (button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_RELEASE) {
+    state.mouse_button_middle_press = false;
+    state.mouse_button_middle_release = true;
+  }
+}
+
 void scrollCallback(GLFWwindow* window, double x_offset, double y_offset) {
 
   if (y_offset >= 0) {
     state.mouse_scroll_up = true;
-    return;
   }
 
   else if (y_offset <= 0) {
     state.mouse_scroll_down = true;
-    return;
   }
+}
+
+void cursorPositionCallback(GLFWwindow* window, double xpos, double ypos) {
+
+  state.cursor_x_offset = state.cursor_x_position - xpos;
+  state.cursor_y_offset = state.cursor_y_position - ypos;
+
+  state.cursor_x_position = xpos;
+  state.cursor_y_position = ypos;
 }
