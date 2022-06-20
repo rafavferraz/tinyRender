@@ -1,5 +1,12 @@
 #version 460 core
 
+// T * R * S
+// V_clip = M_proj * M_view * M_model * V_local
+
+// M_model = transform into world coord
+// M_view = camera of OpenGL (camera's point of view)
+// M_proj = transforn vertex coord into clip space range(-1000,1000) -> (-1,1)
+
 layout (location = 0) in vec3 vertex_position; //instanced attribute
 layout (location = 1) in vec3 model_position;  //object's position of center_of_mass
 

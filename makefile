@@ -34,13 +34,3 @@ main.o: $(CXX_OBJECTS) shader.h window.h camera.h render.h objects.h
 
 clean:
 	rm -rf $(CXX_OBJECTS) $(TARGET) $(TARGET_OBJ) $(TARGET_LIB)
-
-
-
-
-# T * R * S
-# V_clip = M_proj * M_view * M_model * V_local
-
-# M_model = transform into world coord
-# M_view = camera of OpenGL (camera's point of view)
-# M_proj = transforn vertex coord into clip space range(-1000,1000) -> (-1,1)
