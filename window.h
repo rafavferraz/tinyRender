@@ -17,37 +17,6 @@ namespace window {
 
 }
 
-struct State {
-
-  bool mouse_button_left_press = false;
-  bool mouse_button_left_release = true;
-
-  bool mouse_button_middle_press = false;
-  bool mouse_button_middle_release = true;
-
-  bool mouse_scroll_up = false;
-  bool mouse_scroll_down = false;
-
-  double cursor_x_position = 0.0;
-  double cursor_y_position = 0.0;
-
-  double cursor_x_offset = 0.0;
-  double cursor_y_offset = 0.0;
-
-  void clear() {
-
-    mouse_button_left_press = false;
-    mouse_button_middle_press = false;
-
-    cursor_x_offset = 0.0;
-    cursor_y_offset = 0.0;
-
-    mouse_scroll_up = false;
-    mouse_scroll_down = false;
-  }
-
-} state;
-
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 void scrollCallback(GLFWwindow* window, double x_offset, double y_offset);
@@ -124,13 +93,13 @@ struct Window<window::GLFW> {
     
     //keyboard
     if (glfwGetKey(window_ptr,GLFW_KEY_A) == GLFW_PRESS) 
-      camera->processKeyboard(CameraMovement::LEFT,delta_time);
+      camera->processKeyboard(CameraMovement::LEFT,delta_time,state);
     else if (glfwGetKey(window_ptr,GLFW_KEY_D) == GLFW_PRESS) 
-      camera->processKeyboard(CameraMovement::RIGHT,delta_time);
+      camera->processKeyboard(CameraMovement::RIGHT,delta_time,state);
     else if (glfwGetKey(window_ptr,GLFW_KEY_W) == GLFW_PRESS) 
-      camera->processKeyboard(CameraMovement::UP,delta_time);
+      camera->processKeyboard(CameraMovement::UP,delta_time,state);
     else if (glfwGetKey(window_ptr,GLFW_KEY_S) == GLFW_PRESS) 
-      camera->processKeyboard(CameraMovement::DOWN,delta_time);
+      camera->processKeyboard(CameraMovement::DOWN,delta_time,state);
     else if(glfwGetKey(window_ptr,GLFW_KEY_ESCAPE) == GLFW_PRESS) 
 			glfwSetWindowShouldClose(window_ptr,true);
 
@@ -147,19 +116,19 @@ struct Window<window::GLFW> {
     if(!state.mouse_button_left_release) {
 
       if (state.cursor_y_offset > 0.0) {
-        camera->processKeyboard(CameraMovement::PITCH_UP,delta_time);
+        camera->processKeyboard(CameraMovement::PITCH_UP,delta_time,state);
       }
 
       else if (state.cursor_y_offset < 0.0) {
-        camera->processKeyboard(CameraMovement::PITCH_DOWN,delta_time);
+        camera->processKeyboard(CameraMovement::PITCH_DOWN,delta_time,state);
       }
 
       if (state.cursor_x_offset > 0.0) {
-        camera->processKeyboard(CameraMovement::YAW_LEFT,delta_time);
+        camera->processKeyboard(CameraMovement::YAW_LEFT,delta_time,state);
       }
 
       else if (state.cursor_x_offset < 0.0) {
-        camera->processKeyboard(CameraMovement::YAW_RIGHT,delta_time);
+        camera->processKeyboard(CameraMovement::YAW_RIGHT,delta_time,state);
       }
     }
 
@@ -168,29 +137,29 @@ struct Window<window::GLFW> {
     
       //checking mouse movement
       if (state.cursor_y_offset > 0.0) {
-        camera->processKeyboard(CameraMovement::DOWN,delta_time);
+        camera->processKeyboard(CameraMovement::DOWN,delta_time,state);
       }
 
       else if (state.cursor_y_offset < 0.0) {
-        camera->processKeyboard(CameraMovement::UP,delta_time);
+        camera->processKeyboard(CameraMovement::UP,delta_time,state);
       }
 
       if (state.cursor_x_offset > 0.0) {
-        camera->processKeyboard(CameraMovement::RIGHT,delta_time);
+        camera->processKeyboard(CameraMovement::RIGHT,delta_time,state);
       }
 
       else if (state.cursor_x_offset < 0.0) {
-        camera->processKeyboard(CameraMovement::LEFT,delta_time);
+        camera->processKeyboard(CameraMovement::LEFT,delta_time,state);
       }
     }
 
-    //mouse
+    //mouse scroll
     if (state.mouse_scroll_up) {
-      camera->processKeyboard(CameraMovement::FORWARD,delta_time);  
+      camera->processKeyboard(CameraMovement::FORWARD,delta_time,state);  
     } 
 
     else if (state.mouse_scroll_down) {
-      camera->processKeyboard(CameraMovement::BACKWARD,delta_time);  
+      camera->processKeyboard(CameraMovement::BACKWARD,delta_time,state);  
     }
 
     state.clear();
@@ -272,10 +241,12 @@ void scrollCallback(GLFWwindow* window, double x_offset, double y_offset) {
 
   if (y_offset >= 0) {
     state.mouse_scroll_up = true;
+    state.mouse_scroll_up_offset = y_offset;
   }
 
   else if (y_offset <= 0) {
     state.mouse_scroll_down = true;
+    state.mouse_scroll_down_offset = y_offset;
   }
 }
 

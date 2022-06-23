@@ -14,10 +14,10 @@
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 
+#include "window.h"
 #include "camera.h"
 #include "shader.h"
 #include "objects.h"
-#include "window.h"
 
 
 template<class WindowType>
@@ -64,8 +64,20 @@ struct Render {
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_MULTISAMPLE); 
+
+    // glEnable(GL_DEPTH_TEST);
+    // glDepthMask(GL_FALSE); 
+    // glEnable(GL_MULTISAMPLE); 
+
+    // glEnable(GL_DEPTH_TEST);
+    // glDepthFunc(GL_ALWAYS); 
+
+    // glDepthMask(GL_TRUE); 
+    glDepthFunc(GL_LESS); 
+  }
+
+  void clear() const {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   }
 
   void fill(const bool& fill_shape) {
@@ -385,7 +397,6 @@ struct Render {
       drawCone(glm::vec3(0.0,0.0,1.0),0.05,0.1);
 
       //sphere at center
-      // setColor(glm::vec4(1.0f,1.0f,1.0f,1.0f));
       setColor(glm::vec4(0.0f,0.0f,0.0f,1.0f));
       scale(glm::vec3(0.075,0.075,0.075));
       sphere.draw();
@@ -429,7 +440,7 @@ struct Render {
 		shader.setUniformMat4("model",model_matrix);
   }
 
-  void cameraBegin() const {
+  void cameraBegin() {
 
     auto screen_width = window.screen_width;
     auto screen_height = window.screen_height;
@@ -454,10 +465,6 @@ struct Render {
 		
 		shader.setUniformMat4("view",view_matrix);
 		shader.setUniformMat4("projection",projection_matrix);
-  }
-
-  void clear() const {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   }
 
   void background(const glm::vec4& color) const {

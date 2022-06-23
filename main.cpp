@@ -14,8 +14,9 @@ int main() {
 	std::mt19937_64 rng(std::random_device{}());
 	std::uniform_real_distribution<float> distribution(-10.0,10.0);
 
+	// const int N = 100;
 	// const int N = 30'000;
-	// const int N = 1024 * 1024 / 2;  //50% sparse
+	const int N = 1024 * 1024 / 2;  //50% sparse
 	// const int N = 8192 * 8192 / 2;  //50% sparse
 	// const int N = 16384 * 16384 / 2;  //50% sparse
 	// const int N = 32768 * 32768 / 2;  //50% sparse
@@ -26,22 +27,24 @@ int main() {
 		
 		render.camera.setPosition(glm::vec3(0.0f,0.0f,5.0f));
 
-		// for (int i = 0; i < N; ++i) {
+		render.camera.setTarget(glm::vec3(0.0f,0.0f,0.0f));
 
-		// 	float x = distribution(rng);
-		// 	float y = distribution(rng);
-		// 	float z = distribution(rng);
+		for (int i = 0; i < N; ++i) {
 
-		// 	position.push_back(glm::vec3(x,y,z));
-		// }
+			float x = distribution(rng);
+			float y = distribution(rng);
+			float z = 0.0;//distribution(rng);
 
-		position.push_back(glm::vec3(0.0,0.0,0.0));
+			position.push_back(glm::vec3(x,y,z));
+		}
+
+		// position.push_back(glm::vec3(0.0,0.0,0.0));
 		// position.push_back(glm::vec3(1.0,0.0,0.0));
 		// position.push_back(glm::vec3(0.0,1.0,0.0));
 		// position.push_back(glm::vec3(1.0,1.0,0.0));
 
 		// render.loadTriangleInstanced(position);
-		// render.loadRectangleInstanced(position);
+		render.loadRectangleInstanced(position);
 		// render.loadCircleInstanced(position);
 		// render.loadCubeInstanced(position);
 		// render.loadSphereInstanced(position);
@@ -60,34 +63,36 @@ int main() {
 
 		render.cameraBegin();
 
-		render.drawAxis();
-
     render.pushMatrix();
 
 			render.setColor(glm::vec4(1.0f,0.5f,0.2f,0.4f));
 
-			for (unsigned int i = 0; i < position.size(); ++i) {
+			// for (unsigned int i = 0; i < position.size(); ++i) {
 
-				// render.drawTriangle(position.at(i),0.025,0.025);
-				// render.drawRectangle(position.at(i),0.025,0.025);
-				// render.drawCircle(position.at(i),0.025);
-				// render.drawCube(position.at(i),0.025,0.025,0.025);
-				// render.drawSphere(position.at(i),0.025);
+			// 	// render.drawTriangle(position.at(i),0.025,0.025);
+			// 	// render.drawRectangle(position.at(i),0.025,0.025);
+			// 	// render.drawCircle(position.at(i),0.025);
+			// 	// render.drawCube(position.at(i),0.025,0.025,0.025);
+			// 	// render.drawSphere(position.at(i),0.025);
 
-				render.drawCube(position.at(i),1.0,1.0,1.0);
-				// render.drawCone(position.at(i),1.0,3.0,true);
-				// render.drawCylinder(position.at(i),1.0,3.0,true);
-			}
+			// 	render.drawCube(position.at(i),1.0,1.0,1.0);
+			// 	// render.drawCone(position.at(i),1.0,3.0,true);
+			// 	// render.drawCylinder(position.at(i),1.0,3.0,true);
+			// }
 
 			// render.setColor(glm::vec4(1.0f,1.0f,0.2f,0.4f));
 
 			// render.drawTriangleInstanced(position.size(),1.0,1.0);
-			// render.drawRectangleInstanced(position.size(),0.025,0.025);
+			render.drawRectangleInstanced(position.size(),0.025,0.025);
 			// render.drawCircleInstanced(position.size(),0.025);
 			// render.drawCubeInstanced(position.size(),0.025,0.025,0.025);
 			// render.drawSphereInstanced(position.size(),0.025);
 
+			// render.drawCubeInstanced(position.size(),1.0,1.0,1.0);
+
 		render.popMatrix();
+
+		render.drawAxis();
 
 		render.cameraEnd();
 	};
