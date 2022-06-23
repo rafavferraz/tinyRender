@@ -59,8 +59,8 @@ struct Window<window::GLFW> {
            glfwSetWindowPos(window_ptr,screen_x_position,screen_y_position);
 
            //1 v-syncs to 60 hz, 0 goes as fast as it can...
-          //  glfwSwapInterval(0);
-           glfwSwapInterval(1);
+           glfwSwapInterval(0);
+          //  glfwSwapInterval(1);
 
            //load all OpenGL function pointers
            if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {

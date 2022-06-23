@@ -25,7 +25,7 @@ int main() {
 
 	auto setup = [&](){
 		
-		render.camera.setPosition(glm::vec3(0.0f,0.0f,5.0f));
+		render.camera.setPosition(glm::vec3(0.0f,0.0f,15.0f));
 
 		render.camera.setTarget(glm::vec3(0.0f,0.0f,0.0f));
 
@@ -101,7 +101,7 @@ int main() {
 
 	};
 
-	render.loop(setup,update,draw,event,false);
+	render.loop(setup,update,draw,event,true);
 
 	return 0;
 }
