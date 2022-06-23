@@ -69,6 +69,10 @@ struct Camera {
 //make it read from here!!
   glm::mat4 view_matrix = glm::mat4(1.0f);
 
+// https://gamedev.stackexchange.com/questions/168542/camera-view-matrix-from-position-yaw-pitch-worldup
+// http://web.cs.wpi.edu/~emmanuel/courses/cs543/slides/lecture6a.pdf
+// https://www.cs.utexas.edu/~theshark/courses/cs354/lectures/cs354-10.pdf
+// https://github.com/cgibson/OpenGL-Examples/blob/master/test/camera.cpp
   void updateCameraVectors() {
     
 //yaw/pitch are global reference!!
