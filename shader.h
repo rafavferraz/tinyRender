@@ -9,7 +9,7 @@
 #include "dependencies/glad/include/glad/glad.h"
 
 
-// namespace tinyrender {
+namespace tinyrender {
 
 
 struct Shader {
@@ -139,4 +139,4 @@ struct Shader {
 };
 
 
-// namespace tinyrender 
+}  // namespace tinyrender 

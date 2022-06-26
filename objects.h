@@ -1176,4 +1176,4 @@ struct Mesh : public Object {
 };
 
 
-// namespace tinyrender
+}  //namespace tinyrender

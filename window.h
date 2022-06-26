@@ -12,7 +12,7 @@
 #define OPENGL_VERSION_MINOR 6
 
 
-// namespace tinyrender {
+namespace tinyrender {
 
 
 namespace window {
@@ -264,4 +264,4 @@ void cursorPositionCallback(GLFWwindow* window, double xpos, double ypos) {
 }
 
 
-// namespace tinyrender 
+}  // namespace tinyrender 

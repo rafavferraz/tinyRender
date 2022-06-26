@@ -165,4 +165,4 @@ struct Camera {
 };
 
 
-// namespace tinyrender
+}  // namespace tinyrender
