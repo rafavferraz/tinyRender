@@ -11,6 +11,10 @@
 #define OPENGL_VERSION_MAJOR 4
 #define OPENGL_VERSION_MINOR 6
 
+
+// namespace tinyrender {
+
+
 namespace window {
 
   struct GLFW {};
@@ -258,3 +262,6 @@ void cursorPositionCallback(GLFWwindow* window, double xpos, double ypos) {
   state.cursor_x_position = xpos;
   state.cursor_y_position = ypos;
 }
+
+
+// namespace tinyrender 

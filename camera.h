@@ -12,6 +12,9 @@
 #include "state.h"
 
 
+namespace tinyrender {
+
+
 enum class CameraMovement { FORWARD, BACKWARD, UP, DOWN, LEFT, RIGHT,
                             PITCH_UP, PITCH_DOWN,
                             YAW_LEFT, YAW_RIGHT
@@ -160,3 +163,6 @@ struct Camera {
     updateCameraVectors();
   }
 };
+
+
+// namespace tinyrender

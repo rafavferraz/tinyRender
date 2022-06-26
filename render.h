@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../utility/clock.h"
+#include "../utility/clock.h"
 
 #include "dependencies/glad/include/glad/glad.h"
 #include <GLFW/glfw3.h>
@@ -18,6 +18,9 @@
 #include "camera.h"
 #include "shader.h"
 #include "objects.h"
+
+
+namespace tinyrender {
 
 
 template<class WindowType>
@@ -484,3 +487,6 @@ struct Render {
     window.loop(&camera,updateFunction,drawFunction,eventFunction,[&](){clear();},print_clock);
   }
 };
+
+
+}  //namespace tinyrnder

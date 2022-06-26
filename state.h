@@ -1,6 +1,9 @@
 #pragma once
 
 
+namespace tinyrender {
+
+
 struct State {
 
   bool mouse_button_left_press = false;
@@ -37,3 +40,6 @@ struct State {
   }
 
 } state;
+
+
+// namespace tinyrender {
