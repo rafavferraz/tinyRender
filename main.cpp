@@ -8,7 +8,6 @@
 
 using namespace tinyrender;
 
-
 int main() {
 
 	Render<window::GLFW> render("Test Window",1200,900,0,1600);

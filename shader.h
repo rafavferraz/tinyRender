@@ -1,9 +1,9 @@
 #pragma once
 
 #include <string>
+#include <iostream>
 #include <fstream>
 #include <sstream>
-#include <iostream>
 #include <utility>
 
 #include "dependencies/glad/include/glad/glad.h"
@@ -139,4 +139,4 @@ struct Shader {
 };
 
 
-}  // namespace tinyrender 
+ } // namespace tinyrender 

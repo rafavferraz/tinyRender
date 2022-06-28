@@ -2,12 +2,13 @@ TARGET = main
 TARGET_OBJ = $(TARGET).o
 
 CXX = g++
+# CXX = clang++
 
 CXXFLAGS = -O3 -march=native -std=c++2a -Wall -Wfatal-errors
-CXXLIBS = -L/usr/local/cuda/lib64 -lcuda -lcudart -ltbb -pthread \
-	./dependencies/glad/lib/libglad.a -lglfw -lpthread  \
-# ./dependencies/glad/lib/libglad.a -lglfw -lX11 -lpthread -lXrandr -lXi -ldl \
+CXXLIBS = -L/usr/local/cuda/lib64 -lcuda -lcudart -ltbb -lpthread \
+	./dependencies/glad/lib/libglad.a -lglfw -lGL -lX11 -lXrandr -ldl
 
+	
 INC_FOLDER = ./include
 SRC_FOLDER = ./src
 OBJ_FOLDER = ./obj

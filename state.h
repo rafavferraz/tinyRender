@@ -42,4 +42,4 @@ struct State {
 } state;
 
 
-}  //namespace tinyrender 
+}  // namespace tinyrender 

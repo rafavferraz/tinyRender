@@ -203,7 +203,7 @@ struct Window<window::GLFW> {
       if (clock_loop.hasElapsed(milliseconds(500))) {
 
         current_time = clock_loop.get();
-        double fps = 1.0d / current_time;
+        double fps = 1.0 / current_time;
 
         if (print_clock)
           OUTPUT(clock_loop,fps)
