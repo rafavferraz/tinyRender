@@ -1,8 +1,8 @@
 #pragma once
 
-#include <numbers>
 #include <map>
 #include <utility>
+#include <math.h>
 
 #include "dependencies/glad/include/glad/glad.h"
 #include <GLFW/glfw3.h>
@@ -29,8 +29,13 @@ struct Object {
   std::vector<float> vertices;
   std::vector<unsigned int> indexes;
 
-  void load();
-  void draw() const;
+//necessary? why not virtual?
+  // void load();
+  // void draw() const;
+
+  // template<typename EngineType, typename RenderType>
+  // void draw(EngineType& engine, RenderType& render,  
+  //           const bool& print_empty_data = false) const;
 };
 
 struct Triangle : public Object {
@@ -266,7 +271,7 @@ struct Circle : public Object {
     vertices.clear();
 
     int min = std::max(number_vertices,3);
-    float step = (2.0 * std::numbers::pi) / min;
+    float step = (2.0 * M_PI) / min;
 
     for (int i = 0; i < min; ++i) {
 
@@ -755,7 +760,7 @@ struct Cone : public Object {
     vertices.clear();
 
     int min = std::max(number_vertices,3);
-    float step = (2.0 * std::numbers::pi) / min;
+    float step = (2.0 * M_PI) / min;
 
     vertices.push_back(0.0f);
     vertices.push_back(0.0f);
@@ -905,7 +910,7 @@ struct Cylinder : public Object {
     vertices.clear();
 
     int min = std::max(number_vertices,3);
-    float step = (2.0 * std::numbers::pi) / min;
+    float step = (2.0 * M_PI) / min;
 
     for (int i = 0; i < min; ++i) {
 

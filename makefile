@@ -1,10 +1,10 @@
 TARGET = main
 TARGET_OBJ = $(TARGET).o
 
-CXX = g++
-# CXX = clang++
+# CXX = g++
+CXX = clang++
 
-CXXFLAGS = -O3 -march=native -std=c++2a -Wall -Wfatal-errors
+CXXFLAGS = -O3 -march=native -std=c++17 -Wall -Wfatal-errors
 CXXLIBS = -L/usr/local/cuda/lib64 -lcuda -lcudart -ltbb -lpthread \
 	./dependencies/glad/lib/libglad.a -lglfw -lGL -lX11 -lXrandr -ldl
 

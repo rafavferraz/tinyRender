@@ -10,7 +10,7 @@ using namespace tinyrender;
 
 int main() {
 
-	Render<window::GLFW> render("Test Window",1200,900,0,1600);
+	Render<window::GLFW> render("Test Window","./shader.vert","./shader.frag",1200,900,0,1600);
 
 	std::mt19937_64 rng(std::random_device{}());
 	std::uniform_real_distribution<float> distribution(-10.0,10.0);
@@ -103,6 +103,7 @@ int main() {
 	};
 
 	render.loop(setup,update,draw,event,true);
+
 
 	return 0;
 }

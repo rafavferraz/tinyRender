@@ -35,7 +35,8 @@ struct Window<window::GLFW> {
          unsigned int screen_width, 
          unsigned int screen_height,
          unsigned int screen_x_position, 
-         unsigned int screen_y_position):
+         unsigned int screen_y_position,
+         const bool& v_sync = true):
          window_name(window_name), screen_width(screen_width), 
          screen_height(screen_height), screen_x_position(screen_x_position),
          screen_y_position(screen_y_position) {
@@ -62,9 +63,11 @@ struct Window<window::GLFW> {
 
            glfwSetWindowPos(window_ptr,screen_x_position,screen_y_position);
 
-           //1 v-syncs to 60 hz, 0 goes as fast as it can...
-           glfwSwapInterval(0);
-          //  glfwSwapInterval(1);
+           if (v_sync) {
+            glfwSwapInterval(1);
+           } else {
+            glfwSwapInterval(0);
+           }
 
            //load all OpenGL function pointers
            if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {

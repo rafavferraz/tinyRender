@@ -27,12 +27,15 @@ template<class WindowType>
 struct Render {
 
   Render(const std::string& window_name,
+         const std::string& vertex_shader_lacation,
+         const std::string& fragment_shader_lacation,
          unsigned int screen_width, 
          unsigned int screen_height,
          unsigned int screen_x_position = 0, 
-         unsigned int screen_y_position = 0): 
-         window(window_name,screen_width,screen_height,screen_x_position,screen_y_position),
-         shader("./shader.vert","./shader.frag"),
+         unsigned int screen_y_position = 0,
+         const bool& v_sync = true): 
+         window(window_name,screen_width,screen_height,screen_x_position,screen_y_position,v_sync),
+         shader(vertex_shader_lacation,fragment_shader_lacation),
          camera(glm::vec3(0.0f,0.0f,10.0f)) {
 
     initialize();
@@ -42,6 +45,8 @@ struct Render {
 		glm::mat4 projection_matrix = glm::mat4(1.0f);
 		
 		shader.setUniformMat4("model",model_matrix);
+		shader.setUniformMat4("transform",model_matrix);
+
 		shader.setUniformMat4("view",view_matrix);
 		shader.setUniformMat4("projection",projection_matrix);
 
