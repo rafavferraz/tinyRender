@@ -28,14 +28,6 @@ struct Object {
 
   std::vector<float> vertices;
   std::vector<unsigned int> indexes;
-
-//necessary? why not virtual?
-  // void load();
-  // void draw() const;
-
-  // template<typename EngineType, typename RenderType>
-  // void draw(EngineType& engine, RenderType& render,  
-  //           const bool& print_empty_data = false) const;
 };
 
 struct Triangle : public Object {
